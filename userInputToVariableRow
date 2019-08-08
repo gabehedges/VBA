@@ -1,0 +1,10 @@
+Sub userInputToProperRow ()
+
+Dim name As String
+Dim rowNumber As Long
+
+'Name input inserted into names column using rowNumber variable to obtain proper row
+name = InputBox("Enter employee's name:", "Employee Name", "First Last")
+Range("A" & rowNumber).Value = name
+
+End Sub
