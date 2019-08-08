@@ -1,0 +1,28 @@
+Sub RemoveEmployee()
+Dim row As Long
+Dim first As Variant
+Dim last As Variant
+Dim answer As Integer
+
+row = InputBox("Enter row number of employee to be removed:", "Employee Row Number")
+
+'Setting first and last variables equal to the values in columns A & B of the entered row
+first = "A" & row
+last = "B" & row
+
+'Confirming that this is the wanted employee by printing employee's name
+answer = MsgBox("Confirm employee is: " + Range(first).Text & " " & Range(last).Text, vbYesNo + vbQuestion, "Removal Verification")
+
+'If statement testing for "Yes" answer
+If answer = vbYes Then
+
+'Delete row containing employee and print update to screen
+Range(first).EntireRow.Delete
+MsgBox "Employee Removed", vbInformation, "Update"
+
+'Do nothing and print cancellation to screen
+Else
+MsgBox "Request cancelled"
+End If
+
+End Sub
