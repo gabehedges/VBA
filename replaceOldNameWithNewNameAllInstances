@@ -1,0 +1,21 @@
+Sub NewPM()
+Dim oldname As String
+Dim newname As String
+Dim founder As Range
+
+'Getting old and new PM names
+oldname = InputBox("Enter last name of previous PM:", "Previous Production Manager")
+newname = InputBox("Enter last name of new PM:", "New Production Manager")
+
+'Finding Master Cell to change to new PM name
+Set founder = Application.Range("K2:K8").Find(oldname)
+
+'Changing Master Cell to new PM's name
+Range(founder.Address).Value = newname
+
+'Changing old PM sheet name to new name
+Sheets(oldname).name = newname
+
+MsgBox "You replaced " & oldname & " with " & newname, vbInformation, "Status Update"
+        
+End Sub
