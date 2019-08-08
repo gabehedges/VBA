@@ -1,0 +1,6 @@
+Sub findLastRow ()
+Dim lastRowNumber As Long
+
+lastRowNumber = Sheets("Sheet Name").Cells(Rows.Count, 1).End(xlUp).row
+
+End Sub
