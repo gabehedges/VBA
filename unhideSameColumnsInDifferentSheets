@@ -1,0 +1,47 @@
+Sub UnhideColumns()
+
+Dim password As Variant
+password = Application.InputBox("Enter Password", "Password Protected")
+
+Select Case password
+    Case Is = False
+        MsgBox "Request cancelled", vbInformation, "Password Protected"
+    Case Is = "38410"
+
+Sheets("HR Raw Data").Activate
+Application.ScreenUpdating = False
+
+'Unhide all by looping through CST sheets. CST sheet reference found by using variable "i"
+'to obtain proper cell reference containing Production Manager's name
+
+For i = 2 To 7
+Sheets("HR Raw Data").Activate
+
+'Activating CST sheet
+Sheets(Range("K" & i).Text).Activate
+    
+'Selecting and showing desired columns
+    Range("D:D,G:G,J:J,M:M,P:P,S:S,V:V,Y:Y").Select
+    Selection.EntireColumn.Hidden = False
+Range("A1").Select
+Next i
+
+'Show payrate column on main sheet
+Sheets("HR Raw Data").Activate
+    Range("C:C").Select
+    Selection.EntireColumn.Hidden = False
+Range("A1").Select
+
+'Show payrate column on imported Payroll sheet
+Sheets("Payroll").Activate
+    Range("G:G").Select
+    Selection.EntireColumn.Hidden = False
+Range("A1").Select
+
+Sheets("HR Raw Data").Activate
+
+    Case Else
+        MsgBox "Incorrect Password"
+End Select
+
+End Sub
