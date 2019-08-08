@@ -1,0 +1,10 @@
+Sub findLastRow()
+
+Dim ws As Worksheet
+Dim rowNumber As Long
+
+'Find last row with data
+Set ws = Sheets("HR Raw Data")
+rowNumber = ws.ListObjects("Table1").Range.Columns(2).Cells.Find("*", SearchOrder:=xlByRows, SearchDirection:=xlPrevious).row
+
+End Sub
