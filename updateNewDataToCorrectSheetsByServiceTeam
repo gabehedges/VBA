@@ -1,0 +1,97 @@
+Sub updateCSTSheets()
+
+Sheets("HR Raw Data").Activate
+
+Dim pmRowNumber As Long
+Dim teamColumn As Range
+Dim data As Range
+Dim teamRowNumber As Long
+Dim hrSheet As String
+
+hrSheet = "HR Raw Data"
+Set data = Range("A9:C9")
+pmRowNumber = 2
+
+Application.ScreenUpdating = False
+Application.DisplayStatusBar = False
+
+
+'Unhide all by looping through CST sheets. CST sheet reference found by using variable "i"
+'to obtain proper cell reference containing Production Manager's name
+
+For i = 2 To 7
+Sheets(hrSheet).Activate
+
+'Activating CST sheet
+Sheets(Range("K" & i).Text).Activate
+    
+'Selecting and showing desired columns
+    Range("D:D,G:G,J:J,M:M,P:P,S:S,V:V,Y:Y").Select
+    Selection.EntireColumn.Hidden = False
+Range("A1").Select
+Next i
+
+'Show payrate column on main sheet
+Sheets(hrSheet).Activate
+    Range("C:C").Select
+    Selection.EntireColumn.Hidden = False
+Range("A1").Select
+
+'Show payrate column on imported Payroll sheet
+Sheets("Payroll").Activate
+    Range("G:G").Select
+    Selection.EntireColumn.Hidden = False
+Range("A1").Select
+
+
+'Loops through characters M --> R. These values are the columns that contain PMName + TeamNumber
+For ascii = 77 To 82
+
+    Sheets(hrSheet).Select
+    Sheets(Range("K" & pmRowNumber).Text).Select
+    Set teamColumn = Application.Range("B6")
+    teamRowNumber = 2
+
+        For numberOfCrews = 1 To 8
+            Sheets(hrSheet).Select
+        'Setting filter in table to cell containing PM's name
+            Sheets(hrSheet).ListObjects("Table1").Range.AutoFilter Field:=8, Criteria1:= _
+                Range(Chr(ascii) & teamRowNumber).Text
+                
+        'Using data variable to get to bottom of needed range for copying
+            Application.CutCopyMode = False
+            data.End(xlDown).Select
+            Range(data, Selection.End(xlDown)).Select
+            Selection.Copy
+            
+        'Selecting sheet by PM name referencing cell
+            Sheets(hrSheet).Activate
+            Sheets(Range("K" & pmRowNumber).Text).Select
+        
+        'Selecting appropriate team column to paste values into
+            teamColumn.Select
+            Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+            :=False, Transpose:=False
+            
+        'Setting teamColumn variable to next proper range by offsetting 3 columns to the right
+            teamColumn.Offset(0, 3).Select
+            Set teamColumn = Application.Selection
+            
+        'Incrementing counter to change teamRowNumber variable to move on to next team in range
+            teamRowNumber = teamRowNumber + 1
+            
+         Next numberOfCrews
+         
+'Incrementing pmRowNumber by one to run code with next Production Manager in designated range
+    pmRowNumber = pmRowNumber + 1
+    
+Next ascii
+
+'Reset filter to show all crews
+    Sheets(hrSheet).ListObjects("Table1").Range.AutoFilter Field:=8
+    Sheets(hrSheet).Select
+    
+    Application.ScreenUpdating = True
+    Application.DisplayStatusBar = True
+
+End Sub
