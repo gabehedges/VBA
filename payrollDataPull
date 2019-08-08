@@ -1,0 +1,54 @@
+Import Payroll Edit
+Sub PayrollEditData()
+Dim rangeOfEmployeeNumbers As Range
+Dim rangeToFilterThrough As Range
+Dim currentCell As Range
+Dim foundCell As Range
+Dim lastRowNumber As Long
+Dim openRowNumber As Variant
+Dim rowCounter As Long
+Dim payrollSheet As Worksheet
+Dim hrSheet As Worksheet
+Set payrollSheet = Sheets("Payroll")
+Set hrSheet = Sheets("HR Raw Data")
+
+Application.ScreenUpdating = False
+
+'Find last row with data
+lastRowNumber = payrollSheet.Cells(Rows.Count, 1).End(xlUp).row
+
+'Set range variable to range of data with employee numbers on HR Raw Data sheet
+Set rangeToFilterThrough = hrSheet.Range("A9:A223")
+
+'Set range variable to range of employee numbers from Payroll sheet
+Set rangeOfEmployeeNumbers = payrollSheet.Range("A2:A" & lastRowNumber)
+
+'Run loop to check if cell value of employee numbers from Payroll sheet exists in HR Raw Data sheet
+For Each currentCell In rangeOfEmployeeNumbers
+
+'Setting range variable foundCell equal to range where the value of currentCell is found
+Set foundCell = rangeToFilterThrough.Find(currentCell.Value)
+
+'If cell with matching employee number isn't found, copy data from current row from Payroll
+'and paste to first row after last data instance in HR Raw Data
+If foundCell Is Nothing Then
+
+'Assigning first open row number to variable
+openRowNumber = hrSheet.ListObjects("Table1").Range.Columns(3).Cells.Find("*", SearchOrder:=xlByRows, SearchDirection:=xlPrevious).row + 1
+
+'Capturing data from Payroll and adding new employee in first open row in HR Raw Data
+payrollSheet.Range("A" & currentCell.row & ":" & "C" & currentCell.row).Copy
+hrSheet.Range("A" & openRowNumber & ":" & "C" & openRowNumber).PasteSpecial Paste:=xlPasteValues
+
+'Update employee's pay rate by referencing payrate on Payroll Edit and emplyee's payrate cell in HR Raw Data
+Else
+payrollSheet.Range("C" & currentCell.row).Copy
+hrSheet.Range("C" & foundCell.row).PasteSpecial Paste:=xlPasteValues
+
+End If
+
+Next currentCell
+
+hrSheet.Select
+
+End Sub
