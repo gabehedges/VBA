@@ -1,0 +1,7 @@
+Sub findValue ()
+Dim foundValue As Range
+Dim valueToBeFound As String
+
+Set foundValue = Application.Range("A1:A32").Find(oldname)
+
+End Sub
